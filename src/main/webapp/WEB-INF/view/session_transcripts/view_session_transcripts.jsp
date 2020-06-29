@@ -22,28 +22,27 @@
 
 <div class="container">
 
-  ${param}
-  <br><br>
-  ${paramValues}
-  <br><br>
-  <%--${pageScope}--%>
-  <%--<br><br>--%>
-  <%--${pageContext}--%>
-  <%--<br><br>--%>
-  <%--${paramValues}--%>
-  <%--<br><br>--%>
-  <%--${header.host}--%>
-  <%--<br><br>--%>
-
-    ${view.term}
-    <br><br>
-
+  <%--SEARCH FORM--%>
   <form autocomplete="off">
     <div class="field">
       <label class="label">Search for transcripts</label>
       <div class="control">
         <input class="input" type="text" name="term" value="${view.term}"
                placeholder="e.g. &quot;a phrase&quot; or text">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Type</label>
+      <div class="control">
+        <label class="radio">
+          <input type="radio" name="type" value="Session">
+          Session
+        </label>
+        <label class="radio">
+          <input type="radio" name="type" value="Public Hearing">
+          Public Hearing
+        </label>
       </div>
     </div>
 
@@ -76,10 +75,11 @@
 
   <hr>
 
-    <%--<%@ include file="pagination.jsp"%>--%>
-    <jsp:include page="pagination.jsp">
-      <jsp:param name="view" value="view"/>
-    </jsp:include>
+  <%--PAGINATION--%>
+  <%--<%@ include file="pagination.jsp"%>--%>
+  <jsp:include page="pagination.jsp">
+    <jsp:param name="view" value="view"/>
+  </jsp:include>
 
   <%--TRANSCRIPT LIST--%>
   <ul>
