@@ -2,6 +2,8 @@ package gov.nysenate.openleg.client.response.base;
 
 import gov.nysenate.openleg.dao.base.LimitOffset;
 
+import java.time.LocalDateTime;
+
 public abstract class PaginationResponse extends BaseResponse
 {
     protected int total;

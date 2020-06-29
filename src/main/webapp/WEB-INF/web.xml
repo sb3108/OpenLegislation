@@ -13,9 +13,27 @@
 		<mime-type>image/x-icon</mime-type>
 	</mime-mapping>
 
-	<error-page>
-		<error-code>404</error-code>
-		<location>/WEB-INF/view/404.jsp</location>
-	</error-page>
+	<!--<error-page>-->
+		<!--<error-code>404</error-code>-->
+		<!--<location>/WEB-INF/view/404.jsp</location>-->
+	<!--</error-page>-->
+
+  <!--<jsp-config>-->
+    <!--<jsp-property-group>-->
+      <!--<url-pattern>*.jsp</url-pattern>-->
+      <!--<trim-directive-whitespaces>true</trim-directive-whitespaces>-->
+    <!--</jsp-property-group>-->
+  <!--</jsp-config>-->
+
+
+  <!-- Disable scripting in jsp's -->
+  <jsp-config>
+    <jsp-property-group>
+      <url-pattern>*.jsp</url-pattern>
+      <scripting-invalid>
+        true
+      </scripting-invalid>
+    </jsp-property-group>
+  </jsp-config>
 
 </web-app>

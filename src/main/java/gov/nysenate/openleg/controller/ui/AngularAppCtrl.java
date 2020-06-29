@@ -6,6 +6,9 @@ import gov.nysenate.openleg.client.response.error.ErrorCode;
 import gov.nysenate.openleg.client.response.error.ErrorResponse;
 import gov.nysenate.openleg.config.Environment;
 import gov.nysenate.openleg.model.auth.ApiKeyLoginToken;
+import gov.nysenate.openleg.model.bill.BaseBillId;
+import gov.nysenate.openleg.model.bill.Bill;
+import gov.nysenate.openleg.service.bill.data.BillDataService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
@@ -34,39 +37,53 @@ public class AngularAppCtrl
     @Value("${ga.tracking.id}") private String gaTrackingId;
     @Value("${api.auth.ip.whitelist}") private String ipWhitelist;
 
-    @RequestMapping({"/",
-                     "/data/**",
-                     "/bills/**",
-                     "/calendars/**",
-                     "/agendas/**",
-                     "/transcripts/**",
-                     "/members/**",
-                     "/laws/**",
-                     "/sources/**",
-                     "/reports/**",
-                     "/manage/**"
-                     })
-    public String home(HttpServletRequest request) {
-        String forwardedForIp = request.getHeader("x-forwarded-for");
-        String ipAddr= forwardedForIp == null ? request.getRemoteAddr() : forwardedForIp;
-        Subject subject = SecurityUtils.getSubject();
-        setRequestAttributes(request);
-        // Senate staff and API users will be routed to the internal dev interface.
-        if (subject.isPermitted("ui:view") || ipAddr.matches(ipWhitelist)) {
-            return "home";
-        }
-        // Non-senate staff and un-authenticated users will see the public page.
-        return "publichome";
+    @Autowired
+    private BillDataService billDataService;
+
+    @RequestMapping("/")
+    public String serverside(HttpServletRequest request) {
+        return "index";
     }
 
-    @RequestMapping("/admin/**")
-    public String admin(HttpServletRequest request) {
-        Subject subject = SecurityUtils.getSubject();
-        if (subject.isPermitted("admin:view")) {
-            return home(request);
-        }
-        return "404";
+    @RequestMapping("/bills")
+    public String bill(HttpServletRequest request) {
+        Bill bill = billDataService.getBill(new BaseBillId("S6807", 2019));
+        request.setAttribute("bill", bill);
+        return "bills";
     }
+
+//    @RequestMapping({"/data/**",
+//                     "/bills/**",
+//                     "/calendars/**",
+//                     "/agendas/**",
+//                     "/transcripts/**",
+//                     "/members/**",
+//                     "/laws/**",
+//                     "/sources/**",
+//                     "/reports/**",
+//                     "/manage/**"
+//                     })
+//    public String home(HttpServletRequest request) {
+//        String forwardedForIp = request.getHeader("x-forwarded-for");
+//        String ipAddr= forwardedForIp == null ? request.getRemoteAddr() : forwardedForIp;
+//        Subject subject = SecurityUtils.getSubject();
+//        setRequestAttributes(request);
+//        // Senate staff and API users will be routed to the internal dev interface.
+//        if (subject.isPermitted("ui:view") || ipAddr.matches(ipWhitelist)) {
+//            return "home";
+//        }
+//        // Non-senate staff and un-authenticated users will see the public page.
+//        return "publichome";
+//    }
+//
+//    @RequestMapping("/admin/**")
+//    public String admin(HttpServletRequest request) {
+//        Subject subject = SecurityUtils.getSubject();
+//        if (subject.isPermitted("admin:view")) {
+//            return home(request);
+//        }
+//        return "404";
+//    }
 
     @ResponseBody
     @RequestMapping(value = "/loginapikey", method = RequestMethod.POST)
