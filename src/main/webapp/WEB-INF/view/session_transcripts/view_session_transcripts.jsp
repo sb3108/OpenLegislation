@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Open Legislation 2.0</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/src/bulma.css"/>
+  <script type="text/javascript" src="/static/js/turbolinks.js"></script>
 </head>
 <body>
 
