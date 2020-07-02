@@ -1,10 +1,13 @@
 package gov.nysenate.openleg.controller.ui;
 
 import gov.nysenate.openleg.client.response.base.ListViewResponse;
+import gov.nysenate.openleg.client.view.search.SearchResultView;
+import gov.nysenate.openleg.client.view.transcript.TranscriptInfoView;
 import gov.nysenate.openleg.client.view.transcript.TranscriptView;
 import gov.nysenate.openleg.controller.api.base.BaseCtrl;
 import gov.nysenate.openleg.dao.base.LimitOffset;
 import gov.nysenate.openleg.model.search.SearchException;
+import gov.nysenate.openleg.model.search.SearchResult;
 import gov.nysenate.openleg.model.search.SearchResults;
 import gov.nysenate.openleg.model.transcript.Transcript;
 import gov.nysenate.openleg.model.transcript.TranscriptId;
@@ -37,7 +40,7 @@ public class SessionTranscriptPageCtrl extends BaseCtrl {
                                          @RequestParam(required = false) String year,
                                          HttpServletRequest req,
                                          WebRequest webRequest) throws SearchException {
-        term = term == null ? "" : term;
+        term = term == null ? "" : term.trim();
         year = year == null ? String.valueOf(LocalDate.now().getYear()) : year;
 
         LimitOffset limitOffset = getLimitOffset(webRequest, 25);
@@ -52,11 +55,13 @@ public class SessionTranscriptPageCtrl extends BaseCtrl {
             searchResults = transcriptSearchService.searchTranscripts(searchTerm, Integer.valueOf(year), sort, limitOffset);
         }
 
-        List<TranscriptView> transcripts = new ArrayList<>();
-        for (TranscriptId id : searchResults.getRawResults()) {
-            transcripts.add(new TranscriptView(transcriptDataService.getTranscript(id)));
+        List<SearchResultView> searchResultViews = new ArrayList<>();
+        for (SearchResult<TranscriptId> sr : searchResults.getResults()){
+            TranscriptView transcriptView = new TranscriptView(transcriptDataService.getTranscript(sr.getResult()));
+            searchResultViews.add(new SearchResultView(transcriptView, sr.getRank(), sr.getHighlights()));
         }
-        ListViewResponse<TranscriptView> results = ListViewResponse.of(transcripts,
+
+        ListViewResponse<SearchResultView> results = ListViewResponse.of(searchResultViews,
                 searchResults.getTotalResults(), searchResults.getLimitOffset());
 
         List<String> availableYears = new ArrayList<>();

@@ -75,6 +75,12 @@
     </form>
   </div>
 
+  <div class="container has-text-centered" style="margin-top: 2rem">
+    <span>
+      <b>${view.total} results found.</b>
+    </span>
+  </div>
+
   <section class="section">
     <div class="container">
       <%--PAGINATION--%>
@@ -89,13 +95,20 @@
     <div class="container">
       <%--TRANSCRIPT LIST--%>
       <ul>
-        <c:forEach items="${view.results}" var="transcript">
+        <c:forEach items="${view.results}" var="result">
           <li style="margin-top: 10px;">
-            <a href="/session_transcripts/${transcript.dateTime}">
+            <a href="/session_transcripts/${result.result.dateTime}">
                 <%--TODO May be worth creating our own jstl tag for this type of operation--%>
-              <fmt:parseDate value="${transcript.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" type="both" var="prettyDate"/>
+              <fmt:parseDate value="${result.result.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" type="both"
+                             var="prettyDate"/>
               <b><fmt:formatDate value="${prettyDate}" type="both"/></b></a>
-            - ${transcript.sessionType}
+            - ${result.result.sessionType}
+
+            <c:if test="${view.showHighlights}">
+              <pre style="margin: 1rem;">
+                  ${result.highlights['text']}
+              </pre>
+            </c:if>
           </li>
         </c:forEach>
       </ul>
